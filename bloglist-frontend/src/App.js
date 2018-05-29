@@ -57,6 +57,10 @@ class App extends React.Component {
     blogService.setToken('')
   }
 
+  addBlog = newBlog => {
+    this.setState({ blogs: this.state.blogs.concat(newBlog) })
+  }
+
   render() {
 
     const loginForm = () => (
@@ -95,7 +99,7 @@ class App extends React.Component {
           <button onClick={this.logout}>logout</button>
         </p>
 
-        <BlogForm />
+        <BlogForm addBlog={this.addBlog}/>
         <br />
 
         {this.state.blogs.map(blog =>

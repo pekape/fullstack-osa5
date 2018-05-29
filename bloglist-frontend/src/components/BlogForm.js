@@ -25,12 +25,13 @@ class BlogForm extends React.Component {
     }
 
     try {
-      await blogService.create(newBlog)
+      const createdBlog = await blogService.create(newBlog)
       this.setState({
         title: '',
         author: '',
         url: ''
       })
+      this.props.addBlog(createdBlog)
     } catch(exception) {
       console.log(exception)
     }
