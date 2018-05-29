@@ -32,8 +32,11 @@ class BlogForm extends React.Component {
         url: ''
       })
       this.props.addBlog(createdBlog)
+      this.props.notify('success',
+      `a new blog \'${createdBlog.title}\' by ${createdBlog.author} added`)
     } catch(exception) {
       console.log(exception)
+      this.props.notify('error', 'failed to add blog')
     }
   }
 

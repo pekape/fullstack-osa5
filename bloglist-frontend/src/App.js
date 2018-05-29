@@ -3,6 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
 
 class App extends React.Component {
   constructor(props) {
@@ -11,7 +12,10 @@ class App extends React.Component {
       blogs: [],
       user: null,
       username: '',
-      password: ''
+      password: '',
+      error: null,
+      success: null,
+      timeout: null
     }
   }
 
@@ -41,9 +45,21 @@ class App extends React.Component {
       blogService.setToken(user.token)
 
       this.setState({ username: '', password: '', user })
+      this.notify('success', 'logged in')
     } catch(exception) {
       console.log(exception)
+      this.notify('error', 'failed to login')
     }
+  }
+
+  notify = (success, message) => {
+    clearTimeout(this.state.timeout)
+    this.setState({
+      success: null,
+      error: null,
+      [success]: message,
+      timeout: setTimeout(() => this.setState({ [success]: null }), 3000)
+    })
   }
 
   handleLoginFieldChange = event => {
@@ -51,6 +67,7 @@ class App extends React.Component {
   }
 
   logout = event => {
+    this.notify('success', 'logged out')
     event.preventDefault()
     this.setState({ user: null })
     window.localStorage.removeItem('loggedInUser')
@@ -65,6 +82,7 @@ class App extends React.Component {
 
     const loginForm = () => (
       <div>
+
         <h2>Log in to application</h2>
 
         <form onSubmit={this.login}>
@@ -99,7 +117,7 @@ class App extends React.Component {
           <button onClick={this.logout}>logout</button>
         </p>
 
-        <BlogForm addBlog={this.addBlog}/>
+        <BlogForm addBlog={this.addBlog} notify={this.notify} />
         <br />
 
         {this.state.blogs.map(blog =>
@@ -110,9 +128,14 @@ class App extends React.Component {
 
     return (
       <div>
-        {this.state.user ?
-          blogList() :
-          loginForm()
+        { this.state.error
+          ? <Notification type="error" message={this.state.error} />
+          : <Notification type="success" message={this.state.success} />
+        }
+
+        { this.state.user
+          ? blogList()
+          : loginForm()
         }
       </div>
     )
