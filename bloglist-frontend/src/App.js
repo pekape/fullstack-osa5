@@ -4,6 +4,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 class App extends React.Component {
   constructor(props) {
@@ -117,7 +118,9 @@ class App extends React.Component {
           <button onClick={this.logout}>logout</button>
         </p>
 
-        <BlogForm addBlog={this.addBlog} notify={this.notify} />
+        <Togglable buttonLabel="add blog">
+          <BlogForm addBlog={this.addBlog} notify={this.notify} />
+        </Togglable>
         <br />
 
         {this.state.blogs.map(blog =>
